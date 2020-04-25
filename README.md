@@ -10,8 +10,8 @@ This repository contains all the code and (anonymized) data necessary for reprod
 
 
 ## Data
-* `exp1/` contains a csv of the (anonymized) experiment data `experiment1Full.csv` and `graphs.json` defines the graph structures used in the experiment
-* `banditTask/` contains a csv of the (anonymized) experiment data `networkBandit.csv` and `network2.json` defines the graph structures used in the experiment
+* `exp1/` contains a csv of the (anonymized) experiment data `experiment1Full.csv` and `graphs.json` defines the graph structures used in experiment 1
+* `banditTask/` contains a csv of the (anonymized) experiment data `networkBandit.csv` and `network2.json` defines the graph structures used in experiment 2
 
 
 ## Analyses
