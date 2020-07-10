@@ -170,14 +170,14 @@ kNNprediction <- function(kValue, dataset, omegaValue=0){
 ##############################################################################################################
 
 #Radial Basis Kernel
-rbf <- function(X1,X2,lambda=1, signalVariance = 1){
+rbf <- function(X1,X2,theta){
   #transfer to matrices
   X1 <- as.matrix(X1)
   X2 <- as.matrix(X2)
   #check dimensions
   if(ncol(X1) != ncol(X2)){
     stop("X1 and X2 must contain input values of the same dimension.")
-  } else if(!all(lambda>=0)){
+  } else if(!all(theta>=0)){
     stop("All parameters must be >= 0.")
   }
   #get dimensions
@@ -186,25 +186,29 @@ rbf <- function(X1,X2,lambda=1, signalVariance = 1){
   d <- ncol(X1)
   #initialize sigma
   sigma <-  matrix(rep(0, N1*N2),nrow=N1)
+  #observational variance
+  sf <- theta[d+1]
+  #noise variance
+  sn <- theta[d+2]
   #loop through
   for(i in 1:d){
+    #length scale
+    l <- theta[i] #Note: assumes a unique length scale for each dimension
     #x-diff
-    xdiff <- (outer(X1[,i],X2[,i],function(x,y) x - y)/lambda)^2
+    xdiff <- (outer(X1[,i],X2[,i],function(x,y) x - y)/l)^2
     sigma <- sigma + xdiff
   }
   #RBF function
   if(identical(X1,X2)){
-    #id <- diag(rep(1,N1))
-    #sigma.final <- sf*exp(-0.5*sigma) + sn*id
-    sigma.final <- signalVariance*exp(-0.5*sigma) #Moved noise diagnonal to 
+    id <- diag(rep(1,N1))
+    sigma.final <- sf*exp(-0.5*sigma) + sn*id
   } else {
-    sigma.final <- signalVariance*exp(-0.5*sigma)
+    sigma.final <- sf*exp(-0.5*sigma)
   }
   #return final covariance matrix
   return(sigma.final)
 }
-class(rbf)<- c(class(rbf), "RBF") #identify the rbf kernel
-
+class(rbf)<- c(class(rbf), "GP") #identify the rbf kernel as a gp model
 #Ornstein-Uhlenbeck
 oru <- function(X1,X2,theta){
   #matrices
@@ -335,7 +339,7 @@ cov.inverse.chol <- function(X){
 #X.test: matrix for predcitions
 #X; matrix of observations
 #y: vector of observed outcomes
-#k: covariance matrix (e.g., form diffusion kernel)
+#k: covariance matrix (e.g., from diffusion kernel)
 gpr<- function(X.test, X, Y, k, mu_0 = 25, noise = 0.0001){
   Y <- Y - mu_0 #invariant mean scaling
   #make it a matrix
