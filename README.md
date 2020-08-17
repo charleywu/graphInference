@@ -38,8 +38,9 @@ This repository contains all the code and (anonymized) data necessary for reprod
 * `banditBonus.R` contains code used for analyzing the bonus round data
 
 ### PXP
-* Code for computing the protected probability of exceedence (pxp) is from [Sam Gershman](https://github.com/sjgershm/mfit)
-* `bms.m` contains the code for computing pxp, while `pxp.m` defines the input and output files
+* We provide two different versions of code in both Matlab and Python for computing the protected probability of exceedence (pxp), each producing equivalent results in our analysis.
+* The Matlab version is from [Sam Gershman](https://github.com/sjgershm/mfit), where `analysis/bms.m` contains the code for computing pxp, while `analysis/pxp.m` defines the input and output files
+* The Python version is from [Sichao Yang](https://github.com/cpilab/group-bayesian-model-comparison), where `analysis/bms.py` contains the code for computing pxp and `PXP.ipynb` is an interative notebook that loads the inputs and runs it
 
 
 

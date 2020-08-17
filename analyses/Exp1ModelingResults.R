@@ -72,7 +72,7 @@ modelNames <- c('GP-DF', 'dNN', 'kNN')
 
 #Process data
 participantdf <- df %>% group_by(id) %>% 
-  summarize(RMSE_kNN = sqrt(mean((predictions - kNNpred)^2)), MAE_kNN = mean(abs(predictions - kNNpred)), SSE_kNN =  sum((predictions - kNNpred)^2), nLL_kNN= MSEtoLogLikelihood(kNNpred, predictions),
+  dplyr::summarize(RMSE_kNN = sqrt(mean((predictions - kNNpred)^2)), MAE_kNN = mean(abs(predictions - kNNpred)), SSE_kNN =  sum((predictions - kNNpred)^2), nLL_kNN= MSEtoLogLikelihood(kNNpred, predictions),
   RMSE_dNN = sqrt(mean((predictions -dNNpred)^2 )), MAE_dNN = mean(abs(predictions - dNNpred)), SSE_dNN =  sum((predictions - dNNpred)^2), nLL_dNN = MSEtoLogLikelihood(dNNpred, predictions),
   RMSE_gpDF = sqrt(mean((predictions -gpDFpred)^2 )),MAE_gpDF = mean(abs(predictions - gpDFpred)), SSE_gpDF =  sum((predictions - gpDFpred)^2), nLL_gpDF= MSEtoLogLikelihood(gpDFpred, predictions),
   alpha= mean(alpha), kNNkValue = mean(k), dNNdelta = mean(delta), participantError = sqrt(mean(errorArray^2)))
@@ -96,7 +96,7 @@ levels(modelplottingDF$modelName) <- c('GP', 'dNN', 'kNN') # rename
 ###############################################################################################################################################
 
 #number of participants best fit
-bestModel <- modelplottingDF %>% group_by(id) %>% count(modelName, RMSE) %>% filter (RMSE==min(RMSE))
+bestModel <- modelplottingDF %>% group_by(id) %>% dplyr::count(modelName, RMSE) %>% filter (RMSE==min(RMSE))
 table(bestModel$modelName) 
 modelplottingDF$bestModel <- FALSE #set default to zero
 for (pid in bestModel$id){
@@ -317,6 +317,14 @@ plot(participantdf$kNNkValue, participantdf$participantError)
 ############################################################
 #Correspondence between predictions and ground trith 
 ############################################################
+#Individual correlations
+corDF <- df %>% group_by(id) %>% summarize(trueCor = cor(predictions, trueTargetValue), gpCor = cor(predictions,gpDFpred), dNNcor = cor(predictions, dNNpred), kNNcor = cor(predictions, kNNpred))
+corDF[c(2, 5)] <- scale(corDF[c(2, 5)]) #z-transform
+ttestPretty(corDF$trueCor, corDF$gpCor, paired=T, maxBF = Inf)
+ttestPretty(corDF$gpCor, corDF$dNNcor, paired=T, maxBF = Inf)
+ttestPretty(corDF$gpCor, corDF$kNNcor, paired=T, maxBF = Inf)
+ttestPretty(corDF$dNNcor, corDF$kNNcor, paired=T, maxBF = Inf)
+
 #Omore plot looking at the correspondence between participant predictions and the ground truth
 corTestPretty(df$trueTargetValue, df$predictions, maxBF = Inf)
 pGroundTruthPreds <- ggplot(df, aes(x = trueTargetValue,  y=predictions )) +
@@ -329,7 +337,7 @@ pGroundTruthPreds <- ggplot(df, aes(x = trueTargetValue,  y=predictions )) +
   annotate("text", x = 25, y = 50, label = "paste(italic(r) , \" = .59\" )", parse = TRUE)
 pGroundTruthPreds
 
-corTestPretty(df$gpDFpred, df$predictions)
+corTestPretty(df$gpDFpred, df$predictions,  maxBF = Inf)
 pGPPreds <- ggplot(df, aes(x = predictions,  y=gpDFpred )) +
   geom_point(alpha = 0.1, color = '#009E73')+
   theme_classic()+
@@ -378,7 +386,7 @@ pModels
 ggsave(filename = 'plots/exp1bottomrow.pdf', pModels, width = 12, height = 3, useDingbats=T)
 
 
-complete <-cowplot::plot_grid(pBehavior,pModels,ncol = 1, labels = c('', ''))
+complete <-cowplot::plot_grid(pBehavior,pModels,ncol = 1, labels = c('', '')) #pBehavior is generated in Exp1Behavior.R
 complete
 ggsave(filename = 'plots/exp1Results.pdf', complete, width = 12, height = 6, useDingbats=T)
 

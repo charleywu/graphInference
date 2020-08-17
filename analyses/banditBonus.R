@@ -180,7 +180,7 @@ p3a<- ggplot(as.data.frame(bonusDF), aes(x=nodeDegree, y = RSE))+
   annotate("text", x = 3, y = 85, label = "paste(italic(r) , \" = -.09\", \", \", italic(BF) ,\" = 4.7\" )", parse = TRUE)
 p3a
 
-#Judgment accuracy to eogemCetra;oty
+#Judgment accuracy to eigenCentrality
 corTestPretty(bonusDF$eigenCentrality, bonusDF$RSE) #average per individual
 p3ab<- ggplot(as.data.frame(bonusDF), aes(x=eigenCentrality, y = RSE))+
   geom_hline(yintercept = randomPerformance, linetype = 'dashed')+
@@ -229,7 +229,7 @@ bonusDF$nodeType <- "Not Chosen"
 bonusDF[bonusDF$chosen==T, 'nodeType'] <- "Chosen"
 bonusDF$nodeType <- factor(bonusDF$nodeType)
 
-#Correaltion
+#Correlation
 pJudgment <- ggplot(as.data.frame(bonusDF), aes(x=judgment, y = trueValue))+
   geom_point(alpha = 0.8, color = '#377eb8')+
   geom_smooth(method = 'lm', color= "#e41a1c")+
