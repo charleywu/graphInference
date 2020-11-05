@@ -37,7 +37,7 @@ class(diffusionKernel)<- c(class(diffusionKernel), 'DF')
 #Graph regularization operators: Smola & Kondor, (2003)
 ##############################################################################################################
 
-#A variant of this is used in Tenenbaum & Griffiths (2009)
+#A variant of this is used in Kemp & Tenenbaum (2009)
 regularizedLaplacian <- function(network, sigma, precision = 10, normalizedLaplacian=F){
   #1. Construct Graph Primatives
   D <- diag(strength(network)) #degree matrix
