@@ -6,7 +6,7 @@
 * [Analyses](#analyses)
 
 ## General info
-This repository contains all the code and (anonymized) data necessary for reproducing [Wu, Schulz, & Gershman (*bioRxiv* 2020)](https://charleywu.github.io/downloads/wu2020inference.pdf). The following text provides a summary of each file and it's function, with further comments provided throughout the code. 
+This repository contains all the code and (anonymized) data necessary for reproducing [Wu, Schulz, & Gershman (*Computational Brain and Behavior* 2021)](https://charleywu.github.io/downloads/wu2021inference.pdf). The following text provides a summary of each file and it's function, with further comments provided throughout the code. 
 
 
 ## Data
